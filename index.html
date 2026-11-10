@@ -1,0 +1,503 @@
+<title>RNU Class Schedule</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout concept: an iOS grouped-list app in one centred column. Large title, week strip, inset grouped rows, frosted tab bar, bottom sheet for details. */
+:root {
+  --bg: #F2F2F7;
+  --cell: #FFFFFF;
+  --label: #000000;
+  --label2: #6C6C70;
+  --label3: #C7C7CC;
+  --sep: #C6C6C8;
+  --fill: rgba(120,120,128,.14);
+  --blue: #007AFF;
+  --red: #FF3B30;
+  --warn: #B35A00;
+  --gray: #8E8E93;
+  --bar: rgba(249,249,249,.86);
+  --scrim: rgba(0,0,0,.4);
+  --c-cn: #007AFF;
+  --c-math: #34C759;
+  --c-aut: #AF52DE;
+  --c-soop: #FF9500;
+  --c-java: #FF2D55;
+  --c-dptf: #30B0C7;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000000; --cell: #1C1C1E; --label: #FFFFFF; --label2: #98989F; --label3: #48484A;
+    --sep: #38383A; --fill: rgba(120,120,128,.28); --blue: #0A84FF; --red: #FF453A; --warn: #FF9F0A;
+    --bar: rgba(22,22,24,.86); --scrim: rgba(0,0,0,.6);
+    --c-cn: #0A84FF; --c-math: #30D158; --c-aut: #BF5AF2; --c-soop: #FF9F0A; --c-java: #FF375F; --c-dptf: #40C8E0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000000; --cell: #1C1C1E; --label: #FFFFFF; --label2: #98989F; --label3: #48484A;
+  --sep: #38383A; --fill: rgba(120,120,128,.28); --blue: #0A84FF; --red: #FF453A; --warn: #FF9F0A;
+  --bar: rgba(22,22,24,.86); --scrim: rgba(0,0,0,.6);
+  --c-cn: #0A84FF; --c-math: #30D158; --c-aut: #BF5AF2; --c-soop: #FF9F0A; --c-java: #FF375F; --c-dptf: #40C8E0;
+  color-scheme: dark;
+}
+
+.c-cn { --c: var(--c-cn); } .c-math { --c: var(--c-math); } .c-aut { --c: var(--c-aut); }
+.c-soop { --c: var(--c-soop); } .c-java { --c: var(--c-java); } .c-dptf { --c: var(--c-dptf); }
+
+[hidden] { display: none !important; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  background: var(--bg); color: var(--label);
+  font-family: var(--font); font-size: 17px; line-height: 22px; letter-spacing: -.011em;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 25; background: var(--bg); }
+button { font: inherit; letter-spacing: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; border-radius: 8px; }
+
+.col { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* navigation bar */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; border-bottom: .5px solid transparent; transition: background .2s, border-color .2s; }
+.nav.scrolled { background: var(--bar); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom-color: var(--sep); }
+.nav-in { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 44px; }
+.nav-title { font-weight: 600; opacity: 0; transition: opacity .2s; }
+.nav.scrolled .nav-title { opacity: 1; }
+.navbtn { background: none; border: 0; color: var(--blue); cursor: pointer; padding: 8px 0; justify-self: end; }
+.navbtn[hidden] { display: none; }
+.navbtn.off { visibility: hidden; }
+.navbtn.strong { font-weight: 600; }
+
+.large { padding-block: 2px 14px; }
+.eyebrow { font-size: 13px; line-height: 18px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--label2); }
+h1 { margin: 0; font-size: 34px; line-height: 41px; font-weight: 700; letter-spacing: .37px; text-wrap: balance; }
+main { padding-bottom: 104px; }
+
+/* grouped lists */
+.group { background: var(--cell); border-radius: 12px; overflow: hidden; }
+.sh { font-size: 13px; line-height: 18px; text-transform: uppercase; letter-spacing: .02em; color: var(--label2); padding: 0 16px 6px; margin: 26px 0 0; display: flex; gap: 8px; }
+.sh.today { color: var(--red); }
+.row { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 58px; padding: 9px 12px 9px 16px; background: none; border: 0; text-align: left; cursor: pointer; }
+.row + .row::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; height: .5px; background: var(--sep); }
+.row:active { background: var(--fill); }
+@media (hover: hover) { .row:hover { background: var(--fill); } }
+.time { flex: 0 0 46px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.bar { flex: 0 0 4px; align-self: stretch; margin-block: 2px; border-radius: 2px; background: var(--c); }
+.txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.name { display: block; }
+.sub { font-size: 13px; line-height: 18px; color: var(--label2); }
+.sub.accent { color: var(--blue); font-weight: 500; }
+.sub.bad { color: var(--red); font-weight: 500; }
+.sub.warn { color: var(--warn); font-weight: 500; }
+.chev { flex: 0 0 auto; color: var(--label3); }
+.row.cancelled .name { text-decoration: line-through; color: var(--label2); }
+.row.started .name, .row.started .time { color: var(--label2); }
+
+/* week strip */
+.strip-head { display: flex; align-items: center; justify-content: space-between; padding: 6px 4px 0 16px; font-weight: 600; font-size: 15px; }
+.arrows { display: flex; }
+.arrow { width: 40px; height: 36px; display: grid; place-items: center; background: none; border: 0; color: var(--blue); cursor: pointer; }
+.arrow:disabled { color: var(--label3); cursor: default; }
+.days { display: grid; grid-template-columns: repeat(7, 1fr); padding: 0 6px 6px; }
+.dayb { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 0; background: none; border: 0; cursor: pointer; min-width: 0; }
+.dl { font-size: 11px; line-height: 14px; font-weight: 600; color: var(--label2); }
+.dn { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 20px; font-variant-numeric: tabular-nums; }
+.dayb.wkend:not(.sel) .dn { color: var(--label2); }
+.dayb.today:not(.sel) .dn { color: var(--red); font-weight: 600; }
+.dayb.sel .dn { background: var(--label); color: var(--bg); font-weight: 600; }
+.dayb.today.sel .dn { background: var(--red); color: #fff; }
+.dots { display: flex; gap: 3px; height: 6px; }
+.dot { width: 5px; height: 5px; border-radius: 50%; background: var(--c); }
+
+.next { margin-top: 26px; }
+.empty { padding: 30px 16px; text-align: center; }
+.empty b { display: block; font-weight: 600; }
+.empty span { font-size: 15px; color: var(--label2); }
+.gap { height: 16px; }
+
+/* courses */
+.ico { flex: 0 0 34px; height: 34px; border-radius: 8px; background: var(--c); color: #fff; display: grid; place-items: center; font-size: 12px; font-weight: 700; letter-spacing: 0; }
+.right { font-size: 15px; color: var(--label2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.foot { font-size: 13px; line-height: 18px; color: var(--label2); padding: 14px 16px 0; text-align: center; }
+
+/* tab bar */
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--bar); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-top: .5px solid var(--sep); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.tabbar-in { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.tab { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0 5px; background: none; border: 0; cursor: pointer; color: var(--gray); font-size: 10px; line-height: 12px; font-weight: 500; letter-spacing: .01em; }
+.tab[aria-selected="true"] { color: var(--blue); }
+
+/* sheet */
+.backdrop { position: fixed; inset: 0; z-index: 40; background: var(--scrim); display: flex; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity .25s; }
+.backdrop.open { opacity: 1; }
+.sheet { width: 100%; max-width: 560px; max-height: 88%; overflow: auto; background: var(--bg); border-radius: 14px 14px 0 0; padding-block: 8px calc(20px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); transform: translateY(100%); transition: transform .32s cubic-bezier(.32,.72,0,1); }
+.backdrop.open .sheet { transform: none; }
+.grab { width: 36px; height: 5px; border-radius: 3px; background: var(--label3); margin: 0 auto 4px; }
+.sh-nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 40px; }
+.sh-title { font-weight: 600; }
+.sh-head { display: flex; align-items: center; gap: 12px; padding: 12px 4px 18px; }
+.sh-head h2 { margin: 0; font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: .35px; text-wrap: balance; }
+.pill { flex: 0 0 6px; align-self: stretch; border-radius: 3px; background: var(--c); }
+.kvr { position: relative; display: flex; justify-content: space-between; gap: 16px; padding: 12px 16px; }
+.kvr + .kvr::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; height: .5px; background: var(--sep); }
+.kvr span:first-child { color: var(--label2); }
+.kvr span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.note { margin-top: 16px; padding: 12px 16px; font-size: 15px; line-height: 20px; }
+.note b { color: var(--warn); font-weight: 600; display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop, .sheet, .nav, .nav-title { transition: none; }
+}
+</style>
+
+<div id="app">
+  <header class="nav" id="nav">
+    <div class="col nav-in">
+      <span></span>
+      <span class="nav-title" id="navTitle"></span>
+      <button class="navbtn" id="todayBtn" type="button">Today</button>
+    </div>
+  </header>
+  <main>
+    <div class="col">
+      <div class="large">
+        <div class="eyebrow" id="eyebrow"></div>
+        <h1 id="title"></h1>
+      </div>
+      <div id="view"></div>
+    </div>
+  </main>
+  <nav class="tabbar" aria-label="Views">
+    <div class="tabbar-in" role="tablist">
+      <button class="tab" role="tab" data-tab="day" id="tab-day" type="button">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+        Day
+      </button>
+      <button class="tab" role="tab" data-tab="week" id="tab-week" type="button">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 6.5H20M9.5 12H20M9.5 17.5H20"/><circle cx="4.8" cy="6.5" r=".8"/><circle cx="4.8" cy="12" r=".8"/><circle cx="4.8" cy="17.5" r=".8"/></svg>
+        Week
+      </button>
+      <button class="tab" role="tab" data-tab="courses" id="tab-courses" type="button">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.2C10.6 5 8.4 4.5 4.5 4.5v13.3c3.9 0 6.1.5 7.5 1.7 1.4-1.2 3.6-1.7 7.5-1.7V4.5c-3.9 0-6.1.5-7.5 1.7zM12 6.2v13.3"/></svg>
+        Courses
+      </button>
+    </div>
+  </nav>
+  <div class="backdrop" id="backdrop" hidden>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Class details"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var DS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var MS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  var COURSES = {
+    cn:   { name: 'Computer Networks Architecture and Operating Systems', code: 'CN' },
+    math: { name: 'Mathematical and Numerical Methods', code: 'MN' },
+    aut:  { name: 'Automata Computability and Complexity', code: 'AC' },
+    soop: { name: 'System and Object-Oriented Programming', code: 'OO' },
+    java: { name: 'Java Development Fundamentals', code: 'JD' },
+    dptf: { name: 'Development Process and Tooling Foundations', code: 'DP' }
+  };
+  var ORDER = ['cn', 'math', 'aut', 'soop', 'java', 'dptf'];
+  var HOLIDAYS = { '2026-11-18': 'Public holiday in Latvia' };
+
+  /* date helpers (all dates are local YYYY-MM-DD strings) */
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function iso(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function parse(s) { var p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); }
+  function addDays(s, n) { var d = parse(s); d.setDate(d.getDate() + n); return iso(d); }
+  function mondayOf(s) { var d = parse(s); return addDays(s, -((d.getDay() + 6) % 7)); }
+  function at(c) { var d = parse(c.date), t = c.time.split(':'); d.setHours(+t[0], +t[1], 0, 0); return d; }
+  function longDate(s) { var d = parse(s); return DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()]; }
+  function shortDate(s) { var d = parse(s); return DS[d.getDay()] + ' ' + d.getDate() + ' ' + MS[d.getMonth()]; }
+  function rangeLabel(mon) {
+    var a = parse(mon), b = parse(addDays(mon, 6));
+    return a.getMonth() === b.getMonth()
+      ? a.getDate() + ' – ' + b.getDate() + ' ' + MS[b.getMonth()]
+      : a.getDate() + ' ' + MS[a.getMonth()] + ' – ' + b.getDate() + ' ' + MS[b.getMonth()];
+  }
+  function rel(ms) {
+    var min = Math.max(1, Math.round(ms / 60000));
+    if (min < 60) return 'in ' + min + ' min';
+    var h = Math.floor(min / 60), m = min % 60;
+    return 'in ' + h + ' h' + (m ? ' ' + m + ' min' : '');
+  }
+
+  /* schedule data, read from schedule.rnu.lv on 10 Nov 2026 */
+  var S = [];
+  var OFF = { tue: 1, wed: 2, thu: 3, fri: 4 };
+  function addWeek(mon, pat) {
+    Object.keys(pat).forEach(function (k) {
+      pat[k].forEach(function (x) {
+        var c = { date: addDays(mon, OFF[k]), time: x[0], course: x[1] };
+        if (x[2]) for (var key in x[2]) c[key] = x[2][key];
+        S.push(c);
+      });
+    });
+  }
+  var TUE = [['10:00','cn'], ['11:45','cn']];
+  var WED = [['10:00','math'], ['11:45','math']];
+  var WED_OLD = WED.concat([['13:45','soop'], ['15:30','soop']]);
+  var THU_OLD = [['10:00','aut'], ['11:45','aut']];
+  var THU_NEW = THU_OLD.concat([['13:45','soop'], ['15:30','soop']]);
+  var FRI = [['09:00','java'], ['10:45','dptf']];
+  addWeek('2026-10-26', { tue: TUE, wed: WED_OLD, thu: THU_OLD, fri: [['09:00','java'], ['10:45','dptf',{ cancelled: true }]] });
+  addWeek('2026-11-02', { tue: TUE, wed: WED_OLD, thu: THU_OLD, fri: FRI });
+  addWeek('2026-11-09', { tue: TUE, wed: WED, thu: THU_OLD.concat([['13:45','soop'], ['15:30','soop',{ unconfirmed: true }]]), fri: FRI });
+  addWeek('2026-11-16', { tue: TUE, thu: THU_NEW, fri: FRI });
+  addWeek('2026-11-23', { tue: TUE, wed: WED, thu: THU_NEW, fri: FRI });
+  addWeek('2026-11-30', { tue: TUE, wed: WED, thu: THU_NEW, fri: FRI });
+  addWeek('2026-12-07', { tue: TUE, wed: WED, thu: THU_NEW, fri: FRI });
+  addWeek('2026-12-14', { tue: TUE, wed: WED, thu: THU_NEW, fri: FRI });
+  addWeek('2026-12-21', { tue: TUE, thu: THU_NEW, fri: [['09:00','java']] });
+  S.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : a.time < b.time ? -1 : a.time > b.time ? 1 : 0; });
+  var byDate = {};
+  S.forEach(function (c, i) { c.id = i; (byDate[c.date] = byDate[c.date] || []).push(c); });
+
+  var FIRST = S[0].date, LAST = S[S.length - 1].date;
+  var MINMON = mondayOf(FIRST), MAXMON = mondayOf(LAST), MAXDAY = addDays(MAXMON, 6);
+  function todayIso() { return iso(new Date()); }
+  function clampDate(s) { return s < FIRST ? FIRST : s > LAST ? LAST : s; }
+
+  var TABS = ['day', 'week', 'courses'];
+  var tab = 'day';
+  try { var h0 = location.hash.slice(1); if (TABS.indexOf(h0) > -1) tab = h0; } catch (e) {}
+  var sel = clampDate(todayIso());
+
+  var $ = function (id) { return document.getElementById(id); };
+  var view = $('view'), sheet = $('sheet'), backdrop = $('backdrop');
+
+  var CHEV = '<svg class="chev" width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg>';
+  var CHEV_L = '<svg width="10" height="16" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 1L1 7l6 6"/></svg>';
+  var CHEV_R = '<svg width="10" height="16" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1l6 6-6 6"/></svg>';
+
+  function nextClass() {
+    var now = new Date();
+    for (var i = 0; i < S.length; i++) if (!S[i].cancelled && at(S[i]) > now) return S[i];
+    return null;
+  }
+
+  function status(c) {
+    if (c.cancelled) return { t: 'Cancelled', k: 'bad' };
+    if (c.unconfirmed) return { t: 'To be confirmed', k: 'warn' };
+    var now = new Date(), s = at(c);
+    if (c.date !== iso(now)) return null;
+    if (s <= now) return { t: 'Started', k: '' };
+    var nx = null;
+    for (var i = 0; i < (byDate[c.date] || []).length; i++) {
+      var x = byDate[c.date][i];
+      if (!x.cancelled && at(x) > now) { nx = x; break; }
+    }
+    return nx === c ? { t: 'Next · ' + rel(s - now), k: 'accent' } : { t: 'Later today', k: '' };
+  }
+
+  function rowHtml(c, withChevron) {
+    var st = status(c);
+    var cls = 'row c-' + c.course + (c.cancelled ? ' cancelled' : '') + (st && st.t === 'Started' ? ' started' : '');
+    return '<button class="' + cls + '" type="button" data-id="' + c.id + '">' +
+      '<span class="time">' + c.time + '</span><span class="bar"></span>' +
+      '<span class="txt"><span class="name">' + COURSES[c.course].name + '</span>' +
+      (st ? '<span class="sub ' + st.k + '">' + st.t + '</span>' : '') + '</span>' +
+      (withChevron === false ? '' : CHEV) + '</button>';
+  }
+
+  function weekHead(mon) {
+    var prevOk = addDays(mon, -7) >= MINMON, nextOk = addDays(mon, 7) <= MAXMON;
+    return '<div class="strip-head"><span>' + rangeLabel(mon) + '</span><span class="arrows">' +
+      '<button class="arrow" type="button" data-nav="-7" aria-label="Previous week"' + (prevOk ? '' : ' disabled') + '>' + CHEV_L + '</button>' +
+      '<button class="arrow" type="button" data-nav="7" aria-label="Next week"' + (nextOk ? '' : ' disabled') + '>' + CHEV_R + '</button>' +
+      '</span></div>';
+  }
+
+  function renderDay() {
+    var mon = mondayOf(sel), tod = todayIso(), letters = 'MTWTFSS', cells = '';
+    for (var i = 0; i < 7; i++) {
+      var s = addDays(mon, i), d = parse(s), list = byDate[s] || [], seen = {}, dots = '';
+      list.forEach(function (c) { if (!seen[c.course] && !c.cancelled) { seen[c.course] = 1; dots += '<i class="dot c-' + c.course + '"></i>'; } });
+      var cls = 'dayb' + (s === sel ? ' sel' : '') + (s === tod ? ' today' : '') + (i > 4 ? ' wkend' : '');
+      cells += '<button class="' + cls + '" type="button" data-date="' + s + '" aria-pressed="' + (s === sel) + '" aria-label="' + longDate(s) + '">' +
+        '<span class="dl">' + letters[i] + '</span><span class="dn">' + d.getDate() + '</span><span class="dots">' + dots + '</span></button>';
+    }
+    var html = '<section class="group">' + weekHead(mon) + '<div class="days">' + cells + '</div></section>';
+
+    if (sel === tod) {
+      var nx = nextClass();
+      if (nx) {
+        var diff = Math.round((parse(nx.date) - parse(tod)) / 86400000);
+        var when = diff === 0 ? rel(at(nx) - new Date()) : diff === 1 ? 'Tomorrow' : shortDate(nx.date);
+        html += '<div class="sh next">Next class</div><div class="group"><button class="row c-' + nx.course + '" type="button" data-goto="' + nx.date + '">' +
+          '<span class="time">' + nx.time + '</span><span class="bar"></span><span class="txt"><span class="name">' + COURSES[nx.course].name +
+          '</span><span class="sub accent">' + when + '</span></span>' + CHEV + '</button></div>';
+      }
+    }
+
+    var list2 = byDate[sel] || [];
+    html += '<div class="gap"></div>';
+    if (list2.length) {
+      html += '<div class="group">' + list2.map(function (c) { return rowHtml(c); }).join('') + '</div>';
+    } else {
+      html += '<div class="group empty"><b>No classes</b><span>' + (HOLIDAYS[sel] || 'Nothing is scheduled on this day.') + '</span></div>';
+    }
+    html += '<p class="foot">Source: schedule.rnu.lv, read on 10 Nov 2026. Only start times are shown.</p>';
+    return html;
+  }
+
+  function renderWeek() {
+    var mon = mondayOf(sel), tod = todayIso(), html = '<section class="group">' + weekHead(mon) + '<div style="height:6px"></div></section>', any = false;
+    for (var i = 0; i < 7; i++) {
+      var s = addDays(mon, i), list = byDate[s];
+      if (!list && !HOLIDAYS[s]) continue;
+      any = true;
+      html += '<div class="sh' + (s === tod ? ' today' : '') + '"><span>' + longDate(s) + '</span>' + (s === tod ? '<span>Today</span>' : '') + '</div>';
+      if (list) html += '<div class="group">' + list.map(function (c) { return rowHtml(c); }).join('') + '</div>';
+      else html += '<div class="group empty"><b>No classes</b><span>' + HOLIDAYS[s] + '</span></div>';
+    }
+    if (!any) html += '<div class="gap"></div><div class="group empty"><b>No classes this week</b><span>Nothing is scheduled.</span></div>';
+    html += '<p class="foot">Source: schedule.rnu.lv, read on 10 Nov 2026. Only start times are shown.</p>';
+    return html;
+  }
+
+  function courseInfo(k) {
+    var all = S.filter(function (c) { return c.course === k && !c.cancelled; }), now = new Date();
+    var left = all.filter(function (c) { return at(c) > now; });
+    var last = all[all.length - 1], lm = mondayOf(last.date);
+    var pat = all.filter(function (c) { return mondayOf(c.date) === lm; });
+    return {
+      left: left.length,
+      pattern: DS[parse(pat[0].date).getDay()] + ' ' + pat.map(function (c) { return c.time; }).join(', '),
+      target: left.length ? left[0].date : last.date
+    };
+  }
+
+  function renderCourses() {
+    var rows = ORDER.map(function (k) {
+      var info = courseInfo(k);
+      return '<button class="row c-' + k + '" type="button" data-goto="' + info.target + '">' +
+        '<span class="ico">' + COURSES[k].code + '</span>' +
+        '<span class="txt"><span class="name">' + COURSES[k].name + '</span><span class="sub">' + info.pattern + '</span></span>' +
+        '<span class="right">' + info.left + ' left</span>' + CHEV + '</button>';
+    }).join('');
+    return '<div class="group">' + rows + '</div>' +
+      '<p class="foot">Covers ' + shortDate(FIRST) + ' to ' + shortDate(LAST) + ' 2026. Tap a course to see its next class.</p>';
+  }
+
+  function render() {
+    var tod = todayIso(), d = parse(sel), title, eyebrow, html;
+    if (tab === 'day') {
+      title = DAYS[d.getDay()];
+      eyebrow = (sel === tod ? 'Today · ' : '') + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+      html = renderDay();
+    } else if (tab === 'week') {
+      title = 'Week';
+      eyebrow = rangeLabel(mondayOf(sel)) + ' ' + d.getFullYear();
+      html = renderWeek();
+    } else {
+      title = 'Courses';
+      eyebrow = ORDER.length + ' this term';
+      html = renderCourses();
+    }
+    view.innerHTML = html;
+    $('title').textContent = title;
+    $('navTitle').textContent = title;
+    $('eyebrow').textContent = eyebrow;
+    TABS.forEach(function (t) { $('tab-' + t).setAttribute('aria-selected', String(t === tab)); });
+    var ct = clampDate(tod);
+    var isToday = tab === 'courses' || (tab === 'day' ? sel === ct : mondayOf(sel) === mondayOf(ct));
+    $('todayBtn').classList.toggle('off', !!isToday);
+  }
+
+  function go(t) {
+    tab = t;
+    try { if (location.hash.slice(1) !== t) location.hash = t; } catch (e) {}
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  function shift(n) {
+    var ns = addDays(sel, n);
+    if (ns < MINMON || ns > MAXDAY) return;
+    sel = ns;
+    render();
+  }
+
+  /* detail sheet */
+  var lastFocus = null;
+  function whenText(c) {
+    if (c.cancelled) return 'Cancelled';
+    var now = new Date(), tod = iso(now);
+    if (c.date < tod) return 'Earlier';
+    if (c.date === tod) return at(c) <= now ? 'Started' : rel(at(c) - now);
+    var diff = Math.round((parse(c.date) - parse(tod)) / 86400000);
+    return diff === 1 ? 'Tomorrow' : 'In ' + diff + ' days';
+  }
+  function openSheet(id) {
+    var c = S[id], k = c.course, info = courseInfo(k);
+    lastFocus = document.activeElement;
+    sheet.className = 'sheet c-' + k;
+    sheet.innerHTML =
+      '<div class="grab"></div>' +
+      '<div class="sh-nav"><span></span><span class="sh-title">Class</span><button class="navbtn strong" type="button" data-close>Done</button></div>' +
+      '<div class="sh-head"><span class="pill"></span><h2>' + COURSES[k].name + '</h2></div>' +
+      '<div class="group">' +
+        '<div class="kvr"><span>Date</span><span>' + longDate(c.date) + '</span></div>' +
+        '<div class="kvr"><span>Starts</span><span>' + c.time + '</span></div>' +
+        '<div class="kvr"><span>Status</span><span>' + whenText(c) + '</span></div>' +
+        '<div class="kvr"><span>Classes left</span><span>' + info.left + '</span></div>' +
+      '</div>' +
+      (c.unconfirmed ? '<div class="group note"><b>To be confirmed</b>This slot was cut off when the schedule was copied. It is shown because every other Thursday has this class. Check it on schedule.rnu.lv.</div>' : '') +
+      '<p class="foot">Room, lecturer and end time are not shown on the schedule page.</p>';
+    backdrop.hidden = false;
+    requestAnimationFrame(function () { requestAnimationFrame(function () { backdrop.classList.add('open'); }); });
+    var done = sheet.querySelector('[data-close]');
+    if (done) done.focus();
+  }
+  function closeSheet() {
+    if (backdrop.hidden) return;
+    backdrop.classList.remove('open');
+    setTimeout(function () { backdrop.hidden = true; sheet.innerHTML = ''; }, 280);
+    if (lastFocus && lastFocus.focus) try { lastFocus.focus(); } catch (e) {}
+  }
+
+  /* events */
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t === backdrop) { closeSheet(); return; }
+    var el = t.closest && t.closest('[data-tab],[data-date],[data-nav],[data-id],[data-goto],[data-close],#todayBtn');
+    if (!el) return;
+    if (el.hasAttribute('data-close')) { closeSheet(); return; }
+    if (el.id === 'todayBtn') { sel = clampDate(todayIso()); render(); return; }
+    if (el.hasAttribute('data-tab')) { go(el.getAttribute('data-tab')); return; }
+    if (el.hasAttribute('data-date')) { sel = el.getAttribute('data-date'); render(); return; }
+    if (el.hasAttribute('data-nav')) { shift(Number(el.getAttribute('data-nav'))); return; }
+    if (el.hasAttribute('data-goto')) { sel = el.getAttribute('data-goto'); go('day'); return; }
+    if (el.hasAttribute('data-id')) { openSheet(Number(el.getAttribute('data-id'))); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { closeSheet(); return; }
+    if (!backdrop.hidden || tab === 'courses') return;
+    if (e.key === 'ArrowLeft') shift(tab === 'day' ? -1 : -7);
+    else if (e.key === 'ArrowRight') shift(tab === 'day' ? 1 : 7);
+  });
+  var tx = 0, ty = 0;
+  view.addEventListener('touchstart', function (e) { var p = e.changedTouches[0]; tx = p.clientX; ty = p.clientY; }, { passive: true });
+  view.addEventListener('touchend', function (e) {
+    if (tab === 'courses') return;
+    var p = e.changedTouches[0], dx = p.clientX - tx, dy = p.clientY - ty;
+    if (Math.abs(dx) > 70 && Math.abs(dy) < 40) shift((dx < 0 ? 1 : -1) * (tab === 'day' ? 1 : 7));
+  }, { passive: true });
+  window.addEventListener('scroll', function () { $('nav').classList.toggle('scrolled', window.scrollY > 30); }, { passive: true });
+  window.addEventListener('hashchange', function () {
+    var h = location.hash.slice(1);
+    if (TABS.indexOf(h) > -1 && h !== tab) { tab = h; render(); }
+  });
+  setInterval(function () { if (backdrop.hidden && document.activeElement === document.body) render(); }, 60000);
+
+  render();
+})();
+</script>
