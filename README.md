@@ -20,3 +20,7 @@ The class data is typed in by hand from the site's month view.
 - Only start times are listed. The month view does not show rooms, lecturers or end times.
 - Thu 12 Nov, 15:30 was cut off in the screenshot. It is assumed from the usual Thursday pattern and marked "to be confirmed".
 - Nothing is listed after 25 Dec on the site.
+
+## Use it on a phone
+
+Open the page in Safari, tap Share, then Add to Home Screen. It opens full screen like an app and uses the included icon.
