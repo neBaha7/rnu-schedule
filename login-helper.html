@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>One-tap RNU login</title>
+<style>
+  :root {
+    --bg: #F2F2F7; --cell: #FFFFFF; --label: #000; --label2: #6C6C70; --sep: #C6C6C8; --blue: #007AFF; --green: #248A3D;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #000; --cell: #1C1C1E; --label: #FFF; --label2: #98989F; --sep: #38383A; --blue: #0A84FF; --green: #30D158; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: var(--bg); color: var(--label); font: 17px/22px var(--font); padding: 24px max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left)); }
+  main { max-width: 560px; margin: 0 auto; }
+  h1 { font-size: 30px; line-height: 36px; margin: 8px 0 6px; letter-spacing: -.02em; }
+  h2 { font-size: 13px; line-height: 18px; text-transform: uppercase; letter-spacing: .02em; color: var(--label2); margin: 28px 16px 6px; font-weight: 400; }
+  p { margin: 0 0 12px; color: var(--label2); font-size: 15px; line-height: 21px; }
+  .group { background: var(--cell); border-radius: 12px; overflow: hidden; }
+  .field { display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 48px; position: relative; }
+  .field + .field::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; height: .5px; background: var(--sep); }
+  .field label { flex: 0 0 112px; }
+  .field input { flex: 1; min-width: 0; border: 0; background: none; color: var(--label); font: inherit; padding: 12px 0; text-align: right; outline: none; }
+  .field input::placeholder { color: var(--label2); opacity: .6; }
+  .btn { display: block; width: 100%; margin-top: 16px; padding: 14px; border: 0; border-radius: 12px; background: var(--blue); color: #fff; font: 600 17px var(--font); cursor: pointer; }
+  .btn:active { opacity: .7; }
+  .btn.secondary { background: var(--cell); color: var(--blue); margin-top: 10px; }
+  textarea { width: 100%; height: 96px; border: 0; border-radius: 12px; background: var(--cell); color: var(--label2); font: 12px/16px ui-monospace, Menlo, monospace; padding: 12px; resize: none; }
+  ol { margin: 0; padding: 0 16px 0 40px; }
+  ol li { padding: 10px 0; border-bottom: .5px solid var(--sep); }
+  ol li:last-child { border-bottom: 0; }
+  .group.steps { padding: 4px 0; }
+  .status { min-height: 20px; margin: 8px 16px 0; font-size: 15px; color: var(--green); }
+  .status.err { color: #D70015; }
+  .note { margin: 16px 16px 0; font-size: 13px; line-height: 18px; color: var(--label2); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>One-tap RNU login</h1>
+  <p>Fills the ID number, contract number, contract date and authorization code on my.rnu.lv with one tap in Safari. Then you press Sign in.</p>
+
+  <h2>Your details</h2>
+  <form id="form" class="group" autocomplete="off">
+    <div class="field"><label for="sid">ID number</label><input id="sid" placeholder="000000-00000" autocomplete="off" autocapitalize="off" autocorrect="off"></div>
+    <div class="field"><label for="num">Contract no.</label><input id="num" placeholder="00-0000" autocomplete="off" autocapitalize="off" autocorrect="off"></div>
+    <div class="field"><label for="date">Contract date</label><input id="date" placeholder="00.00.0000" autocomplete="off" autocapitalize="off" autocorrect="off"></div>
+    <div class="field"><label for="code">Auth. code</label><input id="code" placeholder="00000000" inputmode="numeric" autocomplete="off"></div>
+  </form>
+  <button class="btn" id="make" type="button">Create bookmark code</button>
+  <div class="status" id="status" role="status"></div>
+
+  <section id="result" hidden>
+    <h2>Your bookmark code</h2>
+    <textarea id="out" readonly spellcheck="false"></textarea>
+    <button class="btn" id="copy" type="button">Copy code</button>
+
+    <h2>Add it to Safari (once)</h2>
+    <div class="group steps">
+      <ol>
+        <li>Tap <b>Copy code</b> above.</li>
+        <li>In Safari, tap <b>Share → Add Bookmark</b> on any page. Name it <b>RNU login</b> and save.</li>
+        <li>Tap the <b>Bookmarks</b> button (open book), tap <b>Edit</b>, then tap <b>RNU login</b>. Clear the address and <b>paste</b> the code. Tap <b>Done</b>.</li>
+      </ol>
+    </div>
+
+    <h2>Every time</h2>
+    <div class="group steps">
+      <ol>
+        <li>Open <b>my.rnu.lv</b> in Safari.</li>
+        <li>Tap <b>Bookmarks → RNU login</b>. The form fills in.</li>
+        <li>Press <b>Sign in</b>.</li>
+      </ol>
+    </div>
+    <p class="note">Use Safari, because Chrome on iPhone can't run bookmarks like this. Your details are written inside the bookmark and stay on your devices; this page doesn't send or store anything. Don't share the bookmark with anyone.</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+
+  // This function becomes the bookmark. It runs on my.rnu.lv, so it has to be
+  // fully self-contained, with no comments and every statement ending in ';'.
+  function fillForm(d) {
+    var vis = function (e) { return !!(e.offsetWidth || e.offsetHeight || e.getClientRects().length); };
+    var set = function (e, x) {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(e, x);
+      ['input', 'change', 'keyup', 'blur'].forEach(function (t) { e.dispatchEvent(new Event(t, { bubbles: true })); });
+    };
+    var inputs = [].slice.call(document.querySelectorAll('input')).filter(function (i) {
+      return vis(i) && ['text', 'tel', 'number', ''].indexOf(i.type) > -1 && !i.readOnly && !i.disabled;
+    });
+    var by = function (list, re) { return list.filter(function (i) { return re.test(i.placeholder); })[0]; };
+    var cap = by(inputs, /^0{5,}$/) || inputs[3];
+    var rest = inputs.filter(function (i) { return i !== cap; });
+    var date = by(rest, /^\d{2}\.\d{2}\.\d{4}$/) || rest[2];
+    var num = by(rest, /^\d{2}-\d{4}$/) || rest[1];
+    var sid = rest.filter(function (i) { return i !== date && i !== num; })[0];
+    var n = 0;
+    if (sid) { set(sid, d.sid); n++; }
+    if (num) { set(num, d.num); n++; }
+    if (date) { set(date, d.date); n++; }
+    if (cap && d.code) { set(cap, d.code); n++; }
+    if (!n) { alert('No login form found on this page.'); }
+  }
+
+  function buildBookmark(values) {
+    var body = fillForm.toString().replace(/\s+/g, ' ');
+    var code = '(' + body + ')(' + JSON.stringify(values) + ');';
+    return 'javascript:' + encodeURIComponent(code);
+  }
+
+  function say(msg, isErr) {
+    var s = $('status');
+    s.textContent = msg;
+    s.className = 'status' + (isErr ? ' err' : '');
+  }
+
+  $('make').addEventListener('click', function () {
+    var v = { sid: $('sid').value.trim(), num: $('num').value.trim(), date: $('date').value.trim(), code: $('code').value.trim() };
+    if (!v.sid || !v.num || !v.date) { say('Enter your ID number, contract number and contract date.', true); return; }
+    $('out').value = buildBookmark(v);
+    $('result').hidden = false;
+    say('Done. Now follow the steps below.');
+    $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  $('copy').addEventListener('click', function () {
+    var ta = $('out'), text = ta.value;
+    var fallback = function () {
+      ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      say(ok ? 'Copied ✓' : 'Press and hold the code, then choose Copy.', !ok);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { say('Copied ✓'); }, fallback);
+    } else {
+      fallback();
+    }
+  });
+})();
+</script>
+</body>
+</html>
